@@ -10,17 +10,17 @@ have used pages router of nextjs with typescript
 Follow these steps to set up and run the project locally:
 
 1. Clone the Repository
-First, clone the repository to your local machine:
+ First, clone the repository to your local machine:
 
 2. change directory into the project
-cd "the/path/to/folder"
+ cd "the/path/to/folder"
 
 4. bun or npm install
-install all node dependencies
+ install all node dependencies
 
 6. bun dev or npm run dev
-starting local server
+ starting local server
 
 8. open https://localhost:3000
-open in browser 
+ open in browser 
 
