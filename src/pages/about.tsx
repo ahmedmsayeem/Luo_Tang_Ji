@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Clock, Music, Leaf, Users, BarChart, MessageCircle } from "lucide-react";
 
 import localFont from "next/font/local";
+import TailwindButton from "@/components/hamaraButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -82,13 +83,9 @@ export default function HowItWorksPage() {
 
         <section className="w-full text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Boost Your Productivity?</h2>
-          <Button
-            asChild
-            size="lg"
-            className="rounded-full bg-white text-gray-900 hover:bg-gray-200"
-          >
-            <Link href="/signup">Get Started Now</Link>
-          </Button>
+          
+            <Link href="/signup"> <TailwindButton label="Get Started now" className="rounded-full"/> </Link>
+         
         </section>
       </main>
 

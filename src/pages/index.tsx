@@ -5,7 +5,7 @@ import { Clock, Music, Plane, Users } from "lucide-react";
 import Image from "next/image";
 import localFont from "next/font/local";
 import MacintoshIllustration from "@/components/monitor";
-
+import TailwindButton from "@/components/hamaraButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,12 +40,14 @@ export default function HomePage() {
                 Connect with random strangers, boost productivity, and grow together in a calming, aesthetic environment.
               </p>
               <div className="flex gap-4 items-center justify-center md:justify-start  relative top-[-30px]">
+              <Link href="/signup"> <TailwindButton label="Get Started" className="rounded-full"/> </Link>
+              
                 <Button
                   asChild
                   size="lg"
                   className="rounded-full bg-white text-gray-900 hover:bg-gray-200"
                 >
-                  <Link href="/signup">Get Started</Link>
+                  
                 </Button>
                 <Button
                   asChild
