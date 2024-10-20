@@ -1,31 +1,105 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
-import { Clock, FileText, ListTodo, Video, Users, Music, Play, Pause, SkipBack, SkipForward } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Clock, FileText, ListTodo, Music, Play, Pause, SkipBack, SkipForward, Plus, Trash2 } from "lucide-react"
+import { toast, Toaster } from 'sonner'
+import VideoStreaming from '@/components/main/Cards'
 
 export default function StudyPage() {
   const [activeCard, setActiveCard] = useState('timer')
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [timer, setTimer] = useState(25 * 60) // 25 minutes in seconds
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [notes, setNotes] = useState([{ id: 1, title: 'Note 1', content: '' }])
+  const [activeNoteId, setActiveNoteId] = useState(1)
+  const [todos, setTodos] = useState([
+    { id: 1, text: 'Complete assignment', completed: false },
+    { id: 2, text: 'Review notes', completed: false },
+    { id: 3, text: 'Prepare for exam', completed: false },
+  ])
+  const [newTodo, setNewTodo] = useState('')
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
+  useEffect(() => {
+    const progressTimer = setInterval(() => {
       setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0
-        }
+        if (oldProgress === 100) return 0
         const diff = Math.random() * 10
         return Math.min(oldProgress + diff, 100)
       })
     }, 500)
 
-    return () => {
-      clearInterval(timer)
-    }
+    return () => clearInterval(progressTimer)
   }, [])
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isTimerRunning && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1)
+      }, 1000)
+    } else if (timer === 0) {
+      setIsTimerRunning(false)
+      toast.success('Timer completed!', {
+        description: 'Time to take a break.',
+      })
+    }
+    return () => clearInterval(interval)
+  }, [isTimerRunning, timer])
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60)
+    const seconds = time % 60
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  const handleStartTimer = () => {
+    setIsTimerRunning(true)
+  }
+
+  const handleStopTimer = () => {
+    setIsTimerRunning(false)
+  }
+
+  const handleResetTimer = () => {
+    setIsTimerRunning(false)
+    setTimer(25 * 60)
+  }
+
+  const handleAddNote = () => {
+    const newId = notes.length + 1
+    setNotes([...notes, { id: newId, title: `Note ${newId}`, content: '' }])
+    setActiveNoteId(newId)
+  }
+
+  const handleNoteChange = (content: string) => {
+    setNotes(notes.map(note => 
+      note.id === activeNoteId ? { ...note, content } : note
+    ))
+  }
+
+  const handleAddTodo = () => {
+    if (newTodo.trim()) {
+      setTodos([...todos, { id: todos.length + 1, text: newTodo, completed: false }])
+      setNewTodo('')
+    }
+  }
+
+  const handleToggleTodo = (id: number) => {
+    setTodos(todos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ))
+  }
+
+  const handleDeleteTodo = (id: number) => {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
 
   const cards = [
     { id: 'timer', title: 'Timer', icon: <Clock className="h-6 w-6" /> },
@@ -68,29 +142,83 @@ export default function StudyPage() {
                 </CardHeader>
                 <CardContent>
                   {card.id === 'timer' && (
-                    <div className="text-4xl font-bold text-center">25:00</div>
+                    <div className="space-y-4">
+                      <div className="text-4xl font-bold text-center">{formatTime(timer)}</div>
+                      <div className="flex justify-center space-x-2">
+                        {!isTimerRunning ? (
+                          <Button onClick={handleStartTimer}>Start</Button>
+                        ) : (
+                          <Button onClick={handleStopTimer} variant="destructive">Stop</Button>
+                        )}
+                        <Button onClick={handleResetTimer} variant="outline">Reset</Button>
+                      </div>
+                    </div>
                   )}
                   {card.id === 'notes' && (
-                    <textarea
-                      className="w-full h-[300px] bg-gray-800 text-white border-none rounded-md p-2"
-                      placeholder="Take your notes here..."
-                    ></textarea>
+                    <div className="space-y-4">
+                      <Tabs value={activeNoteId.toString()} onValueChange={(value) => setActiveNoteId(parseInt(value))}>
+                        <div className="flex items-center justify-between mb-2">
+                          <TabsList>
+                            {notes.map((note) => (
+                              <TabsTrigger key={note.id} value={note.id.toString()}>{note.title}</TabsTrigger>
+                            ))}
+                          </TabsList>
+                          <Button onClick={handleAddNote} size="sm"><Plus className="h-4 w-4" /></Button>
+                        </div>
+                        {notes.map((note) => (
+                          <TabsContent key={note.id} value={note.id.toString()}>
+                            <textarea
+                              className="w-full h-[250px] bg-gray-800 text-white border-none rounded-md p-2"
+                              placeholder="Take your notes here..."
+                              value={note.content}
+                              onChange={(e) => handleNoteChange(e.target.value)}
+                            ></textarea>
+                          </TabsContent>
+                        ))}
+                      </Tabs>
+                    </div>
                   )}
                   {card.id === 'todo' && (
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2">
-                        <input type="checkbox" id="task1" className="rounded text-blue-500" />
-                        <label htmlFor="task1">Complete assignment</label>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <input type="checkbox" id="task2" className="rounded text-blue-500" />
-                        <label htmlFor="task2">Review notes</label>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <input type="checkbox" id="task3" className="rounded text-blue-500" />
-                        <label htmlFor="task3">Prepare for exam</label>
-                      </li>
-                    </ul>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          type="text"
+                          placeholder="Add a new task"
+                          value={newTodo}
+                          onChange={(e) => setNewTodo(e.target.value)}
+                          className="flex-grow"
+                        />
+                        <Button onClick={handleAddTodo}>Add</Button>
+                      </div>
+                      <ul className="space-y-2 max-h-[250px] overflow-y-auto">
+                        {todos.map((todo) => (
+                          <li key={todo.id} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                id={`task${todo.id}`}
+                                checked={todo.completed}
+                                onChange={() => handleToggleTodo(todo.id)}
+                                className="rounded text-blue-500"
+                              />
+                              <Label
+                                htmlFor={`task${todo.id}`}
+                                className={todo.completed ? 'line-through text-gray-500' : ''}
+                              >
+                                {todo.text}
+                              </Label>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteTodo(todo.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -99,19 +227,7 @@ export default function StudyPage() {
         </div>
 
         {/* Center - Video area */}
-        <div className="w-full lg:w-1/2 space-y-4">
-          <Card className="h-[400px] flex items-center justify-center">
-            <CardContent>
-              <div className="flex flex-col items-center gap-4">
-                <Video className="h-16 w-16" />
-                <Button className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Start Video Discussion
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <VideoStreaming />
 
         {/* Right side - Plant and Music Player */}
         <div className="w-full lg:w-1/4 space-y-4">
@@ -156,6 +272,7 @@ export default function StudyPage() {
           />
         </div>
       </div>
+      <Toaster />
     </div>
   )
 }
