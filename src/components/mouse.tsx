@@ -1,62 +1,54 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 
-interface BallPosition {
-  x: number
-  y: number
-}
-
-const FollowCursor: React.FC = () => {
-  const [cursorPos, setCursorPos] = useState<BallPosition>({ x: 0, y: 0 })
-  const [ballPos, setBallPos] = useState<BallPosition>({ x: 0, y: 0 })
-  const requestRef = useRef<number>()
+const FollowingCursor: React.FC = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setCursorPos({ x: event.clientX, y: event.clientY })
+    const updateCursorPosition = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY })
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
+    const handleMouseEnter = () => setIsVisible(true)
+    const handleMouseLeave = () => setIsVisible(false)
+
+    document.addEventListener('mousemove', updateCursorPosition)
+    document.addEventListener('mouseenter', handleMouseEnter)
+    document.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
-
-  const animateBall = () => {
-    setBallPos(prevPos => {
-      const dx = cursorPos.x - prevPos.x
-      const dy = cursorPos.y - prevPos.y
-      return {
-        x: prevPos.x + dx * 0.1,
-        y: prevPos.y + dy * 0.1
-      }
-    })
-    requestRef.current = requestAnimationFrame(animateBall)
-  }
-
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(animateBall)
-    return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current)
-      }
+      document.removeEventListener('mousemove', updateCursorPosition)
+      document.removeEventListener('mouseenter', handleMouseEnter)
+      document.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
+    <div
+      style={{
+        position: 'fixed',
+        left: position.x,
+        top: position.y,
+        pointerEvents: 'none',
+        zIndex: 9999,
+        transition: 'opacity 0.3s ease-in-out',
+        opacity: isVisible ? 1 : 0,
+      }}
+    >
       <div
-        className="absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-75 ease-out"
         style={{
-          left: `${ballPos.x}px`,
-          top: `${ballPos.y}px`,
-          boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)'
+          width: '20px',
+          height: '20px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(75, 192, 192, 0.7)',
+          transform: 'translate(-50%, -50%)',
+          boxShadow: '0 0 10px rgba(75, 192, 192, 0.5)',
         }}
       />
     </div>
   )
 }
 
-export default FollowCursor
+export default FollowingCursor
