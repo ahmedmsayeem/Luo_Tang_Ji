@@ -36,10 +36,10 @@ export default function HomePage() {
               </h1>
 
               </div>
-              <p className="text-lg md:text-xl text-gray-300 max-w-lg md:max-w-prose relative top-[-50px]">
+              <p className="text-lg md:text-xl text-gray-300 max-w-lg md:max-w-prose relative top-[-70px]">
                 Connect with random strangers, boost productivity, and grow together in a calming, aesthetic environment.
               </p>
-              <div className="flex gap-4 items-center justify-center md:justify-start  relative top-[-30px]">
+              <div className="flex gap-4 items-center justify-center md:justify-start  relative top-[-40px]">
               <Link href="/signup"> <TailwindButton label="Get Started" className="rounded-full"/> </Link>
               
                 <Button
