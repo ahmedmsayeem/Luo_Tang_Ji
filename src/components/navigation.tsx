@@ -38,7 +38,7 @@ function NavigationBar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center">
-              <div className="text-xl font-bold">Luo Tang Ji</div>
+              <div className="text-xl font-bold">StudyChamber</div>
             </Link>
 
             <div className="hidden md:block">

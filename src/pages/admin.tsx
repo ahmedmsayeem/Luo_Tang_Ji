@@ -323,7 +323,7 @@ export default function StudyPage() {
         </div>
 
         {/* Right side - Plant and Music Player */}
-        <PlantAndMusicPlayer isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+        <PlantAndMusicPlayer isPlaying={isPlaying} initialTime={initialTime} timer={timer} setIsPlaying={setIsPlaying} progress={0} />
       </div>
 
       {/* Bottom - Progress Bar */}

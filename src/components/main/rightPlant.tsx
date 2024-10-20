@@ -5,10 +5,14 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Music, SkipBack, SkipForward, Play, Pause, Search } from "lucide-react"
 import { Slider } from "@/components/ui/slider"
+import Image from 'next/image'
 
 interface PlantAndMusicPlayerProps {
   isPlaying: boolean;
   setIsPlaying: (playing: boolean) => void;
+  progress: number;
+  initialTime: number;
+  timer: number;
 }
 
 interface AudioTrack {
@@ -26,11 +30,11 @@ const audioTracks: AudioTrack[] = [
   { id: 6, title: "Meditation Zen", src: "/audio/6.mp3" },
 ]
 
-const PlantAndMusicPlayer: React.FC<PlantAndMusicPlayerProps> = ({ isPlaying, setIsPlaying }) => {
+const PlantAndMusicPlayer: React.FC<PlantAndMusicPlayerProps> = ({ isPlaying, setIsPlaying, initialTime, timer }) => {
   const [currentTrack, setCurrentTrack] = useState<AudioTrack>(audioTracks[0])
   const [searchQuery, setSearchQuery] = useState("")
   const [volume, setVolume] = useState(50)
-  const [isSearchVisible, setIsSearchVisible] = useState(false) // New state for search visibility
+  const [isSearchVisible, setIsSearchVisible] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
@@ -71,47 +75,43 @@ const PlantAndMusicPlayer: React.FC<PlantAndMusicPlayerProps> = ({ isPlaying, se
   }
 
   const toggleSearchVisibility = () => {
-    setIsSearchVisible(prev => !prev) // Toggle search visibility
+    setIsSearchVisible(prev => !prev)
+  }
+
+  // Function to determine which plant image to show based on the timer and initialTime
+  const getPlantImage = () => {
+    const elapsedTime = initialTime - timer
+    const timePerStage = initialTime / 6
+    const stage = Math.floor(elapsedTime / timePerStage) + 1
+    return `/plant/${Math.min(Math.max(stage, 1), 6)}.png`
   }
 
   return (
     <div className="w-full lg:w-1/4 space-y-4 h-full">
       <Card className="h-full flex flex-col justify-between">
-
-
-      
         <CardContent className="flex-grow flex items-center justify-center p-4">
-          <div className="relative">
-            <div className="w-32 h-64 bg-green-700 rounded-full mx-auto" />
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-16 bg-red-500 rounded-full" />
-            <div className="absolute top-4 right-0 w-16 h-16 bg-yellow-500 rounded-full" />
+          <div className="relative w-64 h-64">
+            <Image
+              src={getPlantImage()}
+              alt="Growing plant"
+              layout="fill"
+              objectFit="contain"
+            />
           </div>
         </CardContent>
-          {/* Search */}
-          <div className="flex items-center gap-2" onClick={toggleSearchVisibility}>
-              <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
-              <Input
-                type="text"
-                placeholder="Search tracks..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-grow bg-gray-700 text-white border-gray-600"
-              />
-            </div>
         <CardContent className="p-4">
-            
+          <div className="flex items-center gap-2 mb-4">
+            <Search className="h-4 w-4 text-gray-400 cursor-pointer" onClick={toggleSearchVisibility} />
+            <Input
+              type="text"
+              placeholder="Search tracks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-grow bg-gray-700 text-white border-gray-600"
+            />
+          </div>
           <div className="space-y-4">
-            {/* <div className="flex items-center gap-2" onClick={toggleSearchVisibility}>
-              <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
-              <Input
-                type="text"
-                placeholder="Search tracks..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-grow bg-gray-700 text-white border-gray-600"
-              />
-            </div> */}
-            {isSearchVisible && ( // Conditionally render the search results
+            {isSearchVisible && (
               <ScrollArea className="h-32">
                 <ul className="space-y-2">
                   {filteredTracks.map(track => (
