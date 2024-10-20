@@ -11,12 +11,11 @@ import { toast, Toaster } from 'sonner'
 import VideoStreaming from '@/components/main/Cards'
 import PlantAndMusicPlayer from '@/components/main/rightPlant'
 
-
 export default function StudyPage() {
   const [activeCard, setActiveCard] = useState('timer')
   const [isPlaying, setIsPlaying] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [timer, setTimer] = useState(25 * 60)
+  const [initialTime, setInitialTime] = useState(25 * 60)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [notes, setNotes] = useState([{ id: 1, title: 'Note 1', content: '' }])
   const [activeNoteId, setActiveNoteId] = useState(1)
@@ -30,19 +29,6 @@ export default function StudyPage() {
   const [newTodo, setNewTodo] = useState('')
   const [editingTodoId, setEditingTodoId] = useState<number|null>(null)
   const [editingTodoText, setEditingTodoText] = useState('')
-
-  useEffect(() => {
-    const progressTimer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) return 0
-        const diff = Math.random() * 10
-        return Math.min(oldProgress + diff, 100)
-      })
-    }, 500)
-
-    return () => clearInterval(progressTimer)
-  }, [])
-  
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -67,6 +53,7 @@ export default function StudyPage() {
 
   const handleStartTimer = () => {
     setIsTimerRunning(true)
+    setInitialTime(timer)
   }
 
   const handleStopTimer = () => {
@@ -76,7 +63,9 @@ export default function StudyPage() {
   const handleResetTimer = () => {
     setIsTimerRunning(false)
     setTimer(25 * 60)
+    setInitialTime(25 * 60)
   }
+
 
   const handleAddNote = () => {
     const newId = notes.length + 1
@@ -338,11 +327,17 @@ export default function StudyPage() {
       </div>
 
       {/* Bottom - Progress Bar */}
-      <div className="mt-8">
+      <div className="mt-8 p-2" >
+        <div className='flex justify-between'>
+        <div>Time: {formatTime(timer)} </div>
+        <div>Task: {todos[0]?.text || 'No tasks'} </div>
+        </div>
+        
+        <br />
         <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-blue-500 transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            style={{ width: `${((initialTime - timer) / initialTime) * 100}%` }}
           />
         </div>
       </div>
