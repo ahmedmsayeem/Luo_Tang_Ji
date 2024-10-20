@@ -6,6 +6,7 @@ import Image from "next/image";
 import localFont from "next/font/local";
 import MacintoshIllustration from "@/components/monitor";
 
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,11 +25,13 @@ export default function HomePage() {
       className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col items-center justify-between font-[family-name:var(--font-geist-sans)] bg-gray-900 text-gray-100`}
     >
       <div className="w-full bg-gray-800 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 md:py-24 ">
           <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-12">
             <div className="flex-1 text-center md:text-left space-y-8">
-              <div className="bg-gray-700 p-4 md:p-6 rounded-lg inline-block">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
+
+
+              <div className="bg-gray-700 p-4 md:p- rounded-lg inline-block">
+                <h1 className="text-7xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
                   Study Together
                 </h1>
               </div>
@@ -53,7 +56,7 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <div className="flex-1 flex justify-center md:justify-end">
+            <div className="flex-1 flex justify-center md:justify-end relative top-[-100px]">
               <MacintoshIllustration />
             </div>
           </div>

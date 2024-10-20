@@ -18,9 +18,9 @@ export default function Icon({
   children,
 }: IconProps) {
   return (
-    <button onClick={onClick} className={cn("rounded-md", btnClass)}>
+    <span onClick={onClick} className={cn("rounded-md", btnClass)}>
       <Iconify icon={icon} className={cn("size-8 m-2", iconClass)} />
       {children}
-    </button>
+    </span>
   );
 }
