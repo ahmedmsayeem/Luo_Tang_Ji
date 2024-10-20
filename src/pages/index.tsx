@@ -30,15 +30,16 @@ export default function HomePage() {
             <div className="flex-1 text-center md:text-left space-y-8">
 
 
-              <div className="bg-gray-700 p-4 md:p- rounded-lg inline-block">
-                <h1 className="text-7xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
-                  Study Together
-                </h1>
+              <div className=" p-4 md:p- rounded-lg inline-block">
+              <h1 className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white relative top-[-150px]">
+                Study Together
+              </h1>
+
               </div>
-              <p className="text-lg md:text-xl text-gray-300 max-w-lg md:max-w-prose">
+              <p className="text-lg md:text-xl text-gray-300 max-w-lg md:max-w-prose relative top-[-50px]">
                 Connect with random strangers, boost productivity, and grow together in a calming, aesthetic environment.
               </p>
-              <div className="flex gap-4 items-center justify-center md:justify-start">
+              <div className="flex gap-4 items-center justify-center md:justify-start  relative top-[-30px]">
                 <Button
                   asChild
                   size="lg"
