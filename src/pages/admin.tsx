@@ -22,7 +22,6 @@ export default function StudyPage() {
   const [activeNoteId, setActiveNoteId] = useState(1)
   const [editingNoteId, setEditingNoteId] = useState<number|null>(null)
   const [editingNoteTitle, setEditingNoteTitle] = useState('')
-  const [isClient, setIsClient] = useState(false);
   const [todos, setTodos] = useState([
     { id: 1, text: 'Complete assignment', completed: false },
     { id: 2, text: 'Review notes', completed: false },
@@ -43,12 +42,6 @@ export default function StudyPage() {
 
     return () => clearInterval(progressTimer)
   }, [])
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Ensure we only render this on the client
   
 
   useEffect(() => {
